@@ -13,7 +13,7 @@ services:
     ports:
       - "5432:5432"     # host:container
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U uco -d reactive_example"]
+      test: ["CMD-SHELL", "pg_isready -U as -d postgres"]
       interval: 5s
       timeout: 3s
       retries: 10
