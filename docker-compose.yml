@@ -1,0 +1,26 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:16
+    container_name: reactive_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: as
+      POSTGRES_PASSWORD: 123456
+      POSTGRES_DB: postgres
+      TZ: America/Bogota
+    ports:
+      - "5432:5432"     # host:container
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U uco -d reactive_example"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      # (opcional) scripts .sql o .sh que se ejecutan al crear el DB por primera vez
+      - ./db/init:/docker-entrypoint-initdb.d:ro
+
+volumes:
+  postgres_data:
