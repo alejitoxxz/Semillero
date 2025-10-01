@@ -6,20 +6,23 @@ import org.springframework.data.relational.core.mapping.Table;
 
 import java.util.Objects;
 
-@Table(name = "Country")
+@Table("country")
 public final class CountryEntity {
 
     @Id
-    private int id;
+    private Integer id;
 
-    @Column(value = "name")
+    @Column("name")
     private String name;
 
-    @Column(value = "dialingCountryCode")
+    @Column("dialing_country_code")
     private String dialingCountryCode;
 
-    @Column(value = "isoCountryCode")
+    @Column("iso_country_code")
     private String isoCountryCode;
+
+    @Column("enabled")
+    private Boolean enabled;
 
     public int getId() {
         return id;
