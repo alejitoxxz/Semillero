@@ -55,7 +55,7 @@ public class PaisController {
     }
 
     @DeleteMapping("/{id}")
-    public Mono<ResponseEntity<Void>> deleteCountry(@PathVariable final Integer id) {
+    public Mono<ResponseEntity<Object>> deleteCountry(@PathVariable final Integer id) {
         return repository.findById(id)
                 .flatMap(existingCountry -> repository.delete(existingCountry)
                         .then(Mono.just(ResponseEntity.noContent().build())))
