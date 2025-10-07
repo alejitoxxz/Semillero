@@ -28,7 +28,7 @@ public final class CountryEntity {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -55,5 +55,13 @@ public final class CountryEntity {
 
     public void setIsoCountryCode(String isoCountryCode) {
         this.isoCountryCode = Objects.requireNonNullElse(isoCountryCode, "").trim();
+    }
+
+    public Boolean getEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(Boolean enabled) {
+        this.enabled = enabled;
     }
 }
