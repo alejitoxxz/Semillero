@@ -14,7 +14,7 @@ public class CountryServiceImpl implements CountryService {
     private final CountryRepository repository;
     private final CountryPublisher publisher;
 
-    public CountryServiceImpl(final CountryRepository repository) {
+    public CountryServiceImpl(final CountryRepository repository, final CountryPublisher publisher) {
         this.repository = repository;
         this.publisher = publisher;
     }
@@ -31,8 +31,8 @@ public class CountryServiceImpl implements CountryService {
 
     @Override
     public Mono<CountryEntity> create(final CountryEntity country) {
-        return repository.save(country).then(repository.findByName(country.getName()))
-        		.doOnNext(publisher::sendCreateEvent);
+        return repository.save(country)
+                .doOnSuccess(publisher::sendCreateEvent);
     }
 
     @Override
@@ -43,15 +43,16 @@ public class CountryServiceImpl implements CountryService {
                     existingCountry.setDialingCountryCode(country.getDialingCountryCode());
                     existingCountry.setIsoCountryCode(country.getIsoCountryCode());
                     existingCountry.setEnabled(country.getEnabled());
-                    return repository.save(existingCountry);
+                    return repository.save(existingCountry)
+                            .doOnSuccess(publisher::sendUpdateEvent);
                 });
     }
 
     @Override
-    public Mono<CountryEntity> delete(Integer id) {
-        return repository.findById(id).flatMap(existingCountry ->
-                repository.deleteById(id).then(Mono.just(existingCountry))
-        );
+    public Mono<Void> delete(final Integer id) {
+        return repository.findById(id)
+                .flatMap(existingCountry -> repository.deleteById(id)
+                        .then(Mono.fromRunnable(() -> publisher.sendDeleteEvent(existingCountry))));
     }
 
     @Override
