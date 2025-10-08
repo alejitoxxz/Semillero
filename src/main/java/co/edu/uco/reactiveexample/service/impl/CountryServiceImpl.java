@@ -1,6 +1,7 @@
 package co.edu.uco.reactiveexample.service.impl;
 
 import co.edu.uco.reactiveexample.entity.CountryEntity;
+import co.edu.uco.reactiveexample.publisher.CountryPublisher;
 import co.edu.uco.reactiveexample.repository.CountryRepository;
 import co.edu.uco.reactiveexample.service.CountryService;
 import org.springframework.stereotype.Service;
@@ -11,9 +12,11 @@ import reactor.core.publisher.Mono;
 public class CountryServiceImpl implements CountryService {
 
     private final CountryRepository repository;
+    private final CountryPublisher publisher;
 
     public CountryServiceImpl(final CountryRepository repository) {
         this.repository = repository;
+        this.publisher = publisher;
     }
 
     @Override
@@ -28,8 +31,8 @@ public class CountryServiceImpl implements CountryService {
 
     @Override
     public Mono<CountryEntity> create(final CountryEntity country) {
-        country.setId(null);
-        return repository.save(country);
+        return repository.save(country).then(repository.findByName(country.getName()))
+        		.doOnNext(publisher::sendCreateEvent);
     }
 
     @Override
@@ -45,9 +48,10 @@ public class CountryServiceImpl implements CountryService {
     }
 
     @Override
-    public Mono<Void> delete(final Integer id) {
-        return repository.findById(id)
-                .flatMap(repository::delete);
+    public Mono<CountryEntity> delete(Integer id) {
+        return repository.findById(id).flatMap(existingCountry ->
+                repository.deleteById(id).then(Mono.just(existingCountry))
+        );
     }
 
     @Override
