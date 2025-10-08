@@ -24,7 +24,7 @@ public final class CountryEntity {
     @Column("enabled")
     private Boolean enabled;
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
