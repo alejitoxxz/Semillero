@@ -17,18 +17,23 @@ public class CountryServiceImpl implements CountryService {
     }
 
     @Override
-    public Flux<CountryEntity> getAllCountries() {
+    public Flux<CountryEntity> findAll() {
         return repository.findAll();
     }
 
     @Override
-    public Mono<CountryEntity> createCountry(final CountryEntity country) {
-        country.setId(null); // asegurar insert
+    public Mono<CountryEntity> findById(final Integer id) {
+        return repository.findById(id);
+    }
+
+    @Override
+    public Mono<CountryEntity> create(final CountryEntity country) {
+        country.setId(null);
         return repository.save(country);
     }
 
     @Override
-    public Mono<CountryEntity> updateCountry(final Integer id, final CountryEntity country) {
+    public Mono<CountryEntity> update(final Integer id, final CountryEntity country) {
         return repository.findById(id)
                 .flatMap(existingCountry -> {
                     existingCountry.setName(country.getName());
@@ -40,26 +45,13 @@ public class CountryServiceImpl implements CountryService {
     }
 
     @Override
-    public Mono<Boolean> deleteCountry(final Integer id) {
+    public Mono<Void> delete(final Integer id) {
         return repository.findById(id)
-                .flatMap(existingCountry ->
-                        repository.delete(existingCountry).then(Mono.just(true)))
-                .defaultIfEmpty(false);
+                .flatMap(repository::delete);
     }
 
     @Override
     public Mono<CountryEntity> findByName(final String name) {
-        // Opción A (si existe en tu repositorio): Mono<CountryEntity> findByName(String name);
         return repository.findByName(name);
-
-        // Opción B (si NO tienes el método anterior en el repo):
-        // return repository.findAll()
-        //         .filter(c -> c.getName() != null && c.getName().equalsIgnoreCase(name))
-        //         .next();
-    }
-
-    @Override
-    public Flux<CountryEntity> findAll() {
-        return repository.findAll();
     }
 }

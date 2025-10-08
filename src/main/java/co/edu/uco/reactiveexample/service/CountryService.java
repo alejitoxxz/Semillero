@@ -6,15 +6,15 @@ import reactor.core.publisher.Mono;
 
 public interface CountryService {
 
-    Flux<CountryEntity> getAllCountries();
+    Flux<CountryEntity> findAll();
 
-    Mono<CountryEntity> createCountry(CountryEntity country);
+    Mono<CountryEntity> findById(Integer id);
 
-    Mono<CountryEntity> updateCountry(Integer id, CountryEntity country);
+    Mono<CountryEntity> create(CountryEntity country);
 
-    Mono<Boolean> deleteCountry(Integer id);
-    
+    Mono<CountryEntity> update(Integer id, CountryEntity country);
+
+    Mono<Void> delete(Integer id);
+
     Mono<CountryEntity> findByName(String name);
-    
-    Mono<CountryEntity> findAll();
 }
