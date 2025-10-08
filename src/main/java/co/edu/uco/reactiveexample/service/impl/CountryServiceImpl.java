@@ -23,7 +23,7 @@ public class CountryServiceImpl implements CountryService {
 
     @Override
     public Mono<CountryEntity> createCountry(final CountryEntity country) {
-        country.setId(null);
+        country.setId(null); // asegurar insert
         return repository.save(country);
     }
 
@@ -42,7 +42,24 @@ public class CountryServiceImpl implements CountryService {
     @Override
     public Mono<Boolean> deleteCountry(final Integer id) {
         return repository.findById(id)
-                .flatMap(existingCountry -> repository.delete(existingCountry).thenReturn(true))
+                .flatMap(existingCountry ->
+                        repository.delete(existingCountry).then(Mono.just(true)))
                 .defaultIfEmpty(false);
+    }
+
+    @Override
+    public Mono<CountryEntity> findByName(final String name) {
+        // Opción A (si existe en tu repositorio): Mono<CountryEntity> findByName(String name);
+        return repository.findByName(name);
+
+        // Opción B (si NO tienes el método anterior en el repo):
+        // return repository.findAll()
+        //         .filter(c -> c.getName() != null && c.getName().equalsIgnoreCase(name))
+        //         .next();
+    }
+
+    @Override
+    public Flux<CountryEntity> findAll() {
+        return repository.findAll();
     }
 }
