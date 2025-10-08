@@ -1,7 +1,7 @@
 package co.edu.uco.reactiveexample.controller;
 
 import co.edu.uco.reactiveexample.entity.CountryEntity;
-import co.edu.uco.reactiveexample.repository.CountryRepository;
+import co.edu.uco.reactiveexample.service.CountryService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -19,46 +19,36 @@ import reactor.core.publisher.Mono;
 @RequestMapping("/api/v1/countries")
 public class PaisController {
 
-    private final CountryRepository repository;
+    private final CountryService countryService;
 
-    // Constructor con inyección de dependencias
-    public PaisController(final CountryRepository repository) {
-        this.repository = repository;
+    public PaisController(final CountryService countryService) {
+        this.countryService = countryService;
     }
 
-    // GET /api/v1/countries -> devuelve todos los países desde la BD
     @GetMapping
     public Flux<CountryEntity> getAllCountries() {
-        return repository.findAll();
+        return countryService.getAllCountries();
     }
 
     @PostMapping
     public Mono<ResponseEntity<CountryEntity>> createCountry(@RequestBody final CountryEntity country) {
-        country.setId(null);
-        return repository.save(country)
+        return countryService.createCountry(country)
                 .map(savedCountry -> ResponseEntity.status(HttpStatus.CREATED).body(savedCountry));
     }
 
     @PutMapping("/{id}")
     public Mono<ResponseEntity<CountryEntity>> updateCountry(@PathVariable final Integer id,
                                                              @RequestBody final CountryEntity country) {
-        return repository.findById(id)
-                .flatMap(existingCountry -> {
-                    existingCountry.setName(country.getName());
-                    existingCountry.setDialingCountryCode(country.getDialingCountryCode());
-                    existingCountry.setIsoCountryCode(country.getIsoCountryCode());
-                    existingCountry.setEnabled(country.getEnabled());
-                    return repository.save(existingCountry);
-                })
+        return countryService.updateCountry(id, country)
                 .map(ResponseEntity::ok)
                 .defaultIfEmpty(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{id}")
     public Mono<ResponseEntity<Object>> deleteCountry(@PathVariable final Integer id) {
-        return repository.findById(id)
-                .flatMap(existingCountry -> repository.delete(existingCountry)
-                        .then(Mono.just(ResponseEntity.noContent().build())))
-                .defaultIfEmpty(ResponseEntity.notFound().build());
+        return countryService.deleteCountry(id)
+                .map(deleted -> deleted
+                        ? ResponseEntity.noContent().build()
+                        : ResponseEntity.notFound().build());
     }
 }
