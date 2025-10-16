@@ -1,7 +1,11 @@
 package co.edu.uco.reactiveexample.controller;
 
 import co.edu.uco.reactiveexample.entity.CountryEntity;
+import co.edu.uco.reactiveexample.publisher.CountryPublisher;
+import co.edu.uco.reactiveexample.publisher.event.CountryEvent;
 import co.edu.uco.reactiveexample.service.CountryService;
+
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 import reactor.core.publisher.Flux;
@@ -11,10 +15,17 @@ import reactor.core.publisher.Flux;
 public class CountryController {
 
     private final CountryService service;
+    private CountryPublisher publisher;
 
-    public CountryController(final CountryService service) {
+    public CountryController(final CountryService service, final CountryPublisher publisher) {
         this.service = service;
+        this.publisher = publisher;
     }
+    
+    @GetMapping(path = "/events", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public Flux<CountryEvent> publishEvents() {
+		return publisher.getStream();
+	}
 
     @PostMapping
     public Mono<CountryEntity> create(@RequestBody final CountryEntity country) {
@@ -37,7 +48,7 @@ public class CountryController {
     }
 
     @DeleteMapping("/{id}")
-    public Mono<Void> delete(@PathVariable final int id) {
+    public Mono<CountryEntity> delete(@PathVariable final int id) {
         return service.delete(id);
     }
 }

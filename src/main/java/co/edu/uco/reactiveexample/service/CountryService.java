@@ -14,7 +14,7 @@ public interface CountryService {
 
     Mono<CountryEntity> update(Integer id, CountryEntity country);
 
-    Mono<Void> delete(Integer id);
+    Mono<CountryEntity> delete(Integer id);
 
     Mono<CountryEntity> findByName(String name);
 

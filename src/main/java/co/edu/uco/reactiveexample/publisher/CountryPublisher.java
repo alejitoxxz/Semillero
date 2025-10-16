@@ -26,4 +26,8 @@ public class CountryPublisher {
     public Flux<CountryEvent> getEvents() {
         return sink.asFlux();
     }
+    
+    public Flux<CountryEvent> getStream() {
+    			return sink.asFlux();
+    }
 }
