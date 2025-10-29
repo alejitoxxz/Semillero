@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@stomp/stompjs@7.2.1/bundles/stomp.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+	<script src="/chat.js"></script>
+    <title>Chatting with the duck!</title>
+</head>
+<body>
+<table>
+    <thead>
+    <tr>
+        <th>
+            Chatting with the duck
+            &nbsp;
+            <button id="connectToChat" onclick => Connect</button>
+            <button id="disconnectToChat"onclick => Disconnect</button>
+        </th>
+    </tr>
+
+    </thead>
+    <tbody>
+    <tr>
+        <th>
+            Message:
+        </th>
+        <td>
+            <input type = "text " id ="message" placeholder = " Write your message">
+        </td>
+    </tr>
+    <tr>
+        <th colspan = "2">
+            <button id="sendMessageButton">Send</button>
+        </th>
+
+    </tr>
+    <tr>
+        <th colspan = "2">Messages exchanged:</th>
+
+    </tr>
+    </tbody>
+    <tfoot id = "sectionMessagesExchanged">
+        <tr >
+            <td colspan="2">
+                Empty!
+            </td>
+
+        </tr>
+    </tfoot>
+
+
+
+</table>
+
+</body>
+</html>
